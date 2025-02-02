@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 80
+      nodePort: 31000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: pigon224/frontend:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: REACT_APP_BCKND_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: bcknd-host
+            - name: REACT_APP_BCKND_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: bcknd-port
+          ports:
+            - containerPort: 80

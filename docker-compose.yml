@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres
+    ports: 
+      - 5432:5432
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=pass123
+      - POSTGRES_DB=infoDB
+
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - database
+    ports: 
+      - 8080:8080
+
+  backend:
+    build:
+      context: ./app
+    ports:
+      - "8000:8000" # Backend accessible at http://localhost:8000
+    environment:
+      DB_HOST: database
+      DB_USER: postgres
+      DB_PASS: pass123
+      DB_NAME: infoDB
+    depends_on:
+      - database # Ensure the database starts before the backend
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:80" # Frontend accessible at http://localhost:3000
+    depends_on:
+      - backend # Ensure the backend starts before the frontend
