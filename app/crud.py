@@ -28,33 +28,6 @@ def create_user(db: Session, user: schemas.UserCreate):
     
     return db_user
 
-
-def authenticate_user(db: Session, form_data: OAuth2PasswordRequestForm, response: Response):
-    user = db.query(models.User).filter(models.User.username == form_data.username).first()
-    if not user:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    
-    # Use bcrypt.verify() to compare the plain password with the stored hashed password
-    if not bcrypt.verify(form_data.password, user.hashed_password):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    
-    # If valid, generate the token
-    token = jwt.encode({"sub": user.username}, SECRET_KEY, algorithm=ALGORITHM)
-    
-    # Set token in cookie
-    response.set_cookie(
-        key="access_token",
-        value=token,
-        httponly=True,
-        secure=True,  # Set to True for production, False for development
-        samesite="Strict",
-        expires=30 * 60 
-    )
-
-
-
-
-
 def add_padding(token: str) -> str:
     # Add padding to the token if necessary
     padding_needed = len(token) % 4

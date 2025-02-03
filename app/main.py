@@ -60,6 +60,7 @@ def login(
 ):
     # Query the user from the database
     user = db.query(User).filter(User.username == username).first()
+    print("this is dev env!!!!!!!!!!!!!!!!!!!!11")
     
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -77,7 +78,7 @@ def login(
         value=access_token,
         httponly=True,  # Prevent JavaScript access
         secure=True,    
-        samesite="None",
+        samesite="strict",
         max_age= 30 * 60
     )
 
@@ -87,8 +88,14 @@ def login(
 
 @app.post("/logout")
 def logout(response: Response):
-    response.delete_cookie(key="access_token")
+    response.delete_cookie(
+        key="access_token",
+        httponly=True,
+        secure=True,
+        samesite="strict"
+    )
     return {"message": "Logged out successfully"}
+    
 
 
 @app.get("/my-posts")
