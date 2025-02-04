@@ -60,7 +60,7 @@ def login(
 ):
     # Query the user from the database
     user = db.query(User).filter(User.username == username).first()
-    print("this is dev env!!!!!!!!!!!!!!!!!!!!11")
+
     
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -81,7 +81,6 @@ def login(
         samesite="strict",
         max_age= 30 * 60
     )
-
     return {"message": "Login successful"}
 
 
@@ -97,13 +96,14 @@ def logout(response: Response):
     return {"message": "Logged out successfully"}
     
 
+    
+
 
 @app.get("/my-posts")
 def get_my_posts(request: Request, db: Session = Depends(get_db)):
     # Retrieve the JWT token from the cookie
     token = request.cookies.get("access_token")
-    print(request.cookies)  # Print all cookies as a dictionary
-    print(token)
+
 
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
@@ -147,15 +147,13 @@ def get_my_posts(request: Request, db: Session = Depends(get_db)):
 def create_post(request: Request, data: PostCreate, db: Session = Depends(get_db)):
     # Retrieve token from cookies
     token = request.cookies.get("access_token")
-    print("Headers:", request.headers)  # Debugging step
-    print("Cookies:", request.cookies)  # Debugging step
+ 
     
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
         
     try:
         # Decode the token
-        
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("sub")  # Get the username from token's payload
         # Fetch user from the database using the username
@@ -202,7 +200,6 @@ def rate_post(
     
     # Retrieve token from cookies
     token = request.cookies.get("access_token")
-    print("token recived", token)
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
     

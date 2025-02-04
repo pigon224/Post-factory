@@ -8,11 +8,6 @@ DB_PASS = os.getenv("DB_PASS")
 DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
-print("SDfsdfdsfds"+DB_USER)
-print(DB_PASS)
-print(DB_HOST)
-print(DB_PORT)
-print(DB_NAME)
 
 if not all([DB_USER, DB_PASS, DB_NAME,DB_PORT,DB_HOST]):
     raise ValueError("Database credentials are missing!")
