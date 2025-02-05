@@ -45,7 +45,7 @@ const PostRating: React.FC<PostRatingProps> = ({ postId, rating }) => {
 
       console.log(`Rating for post ${postId} updated to ${newValue}`);
     } catch (err) {
-      setError("Failed to submit rating. try agian later");
+      setError("Failed to submit rating. Please log in");
       console.error("Error submitting rating:", err);
     }
   };
